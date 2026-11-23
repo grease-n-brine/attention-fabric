@@ -1,9 +1,18 @@
 package greasenbrine.fabric.core;
 
+import greasenbrine.fabric.structures.Point;
+
 public record SilkTick(
     long tick,
-    double[][][] state,
-    double[][][] predictedFutureState,
-    double[][][] surprise,
-    boolean spiked
+    Point position,
+    Point receiverInput,
+    Point excitation,
+    double targetExcitation,
+    double effectiveThreshold,
+    double rawSurprise,
+    double dampedSurprise,
+    double dampeningFactor,
+    boolean triggered,
+    boolean surpriseBoosted,
+    boolean recruiting
 ) {}
