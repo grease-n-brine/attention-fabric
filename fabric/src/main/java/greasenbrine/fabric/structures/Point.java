@@ -51,6 +51,29 @@ public class Point {
         return Arrays.copyOf(coordinates, coordinates.length);
     }
 
+    public double magnitudeSquared() {
+        return coordinates[0] * coordinates[0]
+             + coordinates[1] * coordinates[1]
+             + coordinates[2] * coordinates[2];
+    }
+
+    public double magnitude() {
+        return Math.sqrt(magnitudeSquared());
+    }
+
+    public Point normalize() {
+        double mag = magnitude();
+        
+        if (mag == 0) {
+            throw new ArithmeticException("Cannot normalize a zero vector");
+        }
+        return new Point(new double[] {
+            coordinates[0] / mag,
+            coordinates[1] / mag,
+            coordinates[2] / mag
+        });
+    }
+
     @Override 
     public String toString() {
         return Arrays.toString(coordinates);
