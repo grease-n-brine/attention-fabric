@@ -63,7 +63,7 @@ public class Point {
 
     public Point normalize() {
         double mag = magnitude();
-        
+
         if (mag == 0) {
             throw new ArithmeticException("Cannot normalize a zero vector");
         }
@@ -72,6 +72,20 @@ public class Point {
             coordinates[1] / mag,
             coordinates[2] / mag
         });
+    }
+
+    @Override 
+    public boolean equals(Object obj) {
+        if (this == obj){
+            return true;
+        }
+        if (!(obj instanceof Point)) {
+            return false;
+        }
+        
+        Point other = (Point) obj;
+
+        return Arrays.equals(coordinates, other.coordinates);
     }
 
     @Override 
