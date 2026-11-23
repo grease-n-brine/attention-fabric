@@ -31,6 +31,7 @@ public class Matrix {
 
     public void randomize(double min, double max) {
         Random rand = new Random();
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 data[i][j] = min + (max - min) * rand.nextDouble();
@@ -42,7 +43,9 @@ public class Matrix {
         if (this.cols != other.rows) {
             throw new IllegalArgumentException("Incompatible matrix dimensions");
         }
+
         Matrix result = new Matrix(this.rows, other.cols);
+
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < other.cols; j++) {
                 double sum = 0;
@@ -52,6 +55,7 @@ public class Matrix {
                 result.data[i][j] = sum;
             }
         }
+
         return result;
     }
 
@@ -59,12 +63,15 @@ public class Matrix {
         if (this.rows != other.rows || this.cols != other.cols) {
             throw new IllegalArgumentException("Incompatible matrix dimensions");
         }
+
         Matrix result = new Matrix(this.rows, this.cols);
+
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
                 result.data[i][j] = this.data[i][j] + other.data[i][j];
             }
         }
+
         return result;
     }
 
@@ -72,22 +79,27 @@ public class Matrix {
         if (this.rows != other.rows || this.cols != other.cols) {
             throw new IllegalArgumentException("Incompatible matrix dimensions");
         }
+
         Matrix result = new Matrix(this.rows, this.cols);
+
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
                 result.data[i][j] = this.data[i][j] - other.data[i][j];
             }
         }
+
         return result;
     }
 
     public Matrix transpose() {
         Matrix result = new Matrix(this.cols, this.rows);
+
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
                 result.data[j][i] = this.data[i][j];
             }
         }
+        
         return result;
     }       
 }
