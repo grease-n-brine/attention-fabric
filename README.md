@@ -6,9 +6,11 @@ The framework differs from a conventional artificial neural network in that it e
 
 Each Silk is a stateful unit in a three-dimensional state space. A unit receives an activity signal through receivers and emits a transformed signal through teeth. Directed connections join the teeth of one unit to the receivers of another, forming a loosely tree-structured network in which the signal is progressively transformed at each branch.
 
-A Silk maintains local state and parameters, including baseline excitation, firing threshold, desired excitation level, and surprise damping. Excitation can leak over time, allowing activity to decay toward the unit's baseline or desired level. When incoming activity raises excitation above a firing threshold, the Silk emits the corresponding transformed signal through its teeth.
+Each Silk has current excitation, baseline excitation, excitation gain, and a leakage rate. Incoming signals increase excitation according to gain, while leakage removes activity over time. As gain and leakage balance, excitation approaches a stable level, and the baseline slowly adapts toward that level.
 
-Prediction error, or surprise, is not itself the propagated signal. It is a residual control quantity that can alter excitation, firing, connection formation, and pruning. Excess excitation above a desired level may indicate an anomalous or unrepresented pattern. Such excitation can implicitly recruit additional Silk units by raising their activation across firing thresholds, expanding the network's computational branches without replacing the original signal with surprise. Exact leak, excitation, surprise, and recruitment equations remain to be specified. The spatial trajectories, branch formation, pruning, and migration behavior are proposed mechanisms until their implementation and evaluation are complete.
+Prediction error, or surprise, is not itself the propagated signal. It is a residual control quantity that can alter excitation, firing, connection formation, and pruning. Unusually high excitation may indicate unfamiliar input and trigger additional Silk units to receive the signal. Excitation below the baseline may mark weak or unproductive branches, making them eligible for probabilistic pruning.
+
+During network exploration, Silk units may migrate along randomized trajectories. Migration allows units to encounter new signal regions or connection partners. Subsequent stability, excitation response, and prediction accuracy determine whether the resulting branches remain or are pruned. Exact gain, leakage, surprise, recruitment, pruning, and migration rules remain to be specified. These mechanisms are proposed research behaviors until their implementation and evaluation are complete.
 
 
 
