@@ -6,16 +6,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Silk {
+    // Unique Silk identifier
     private final int id;
+
+    // Current position of the Silk
     private Point position;
+
+    // Homeostatic sweet spot and per-tick leak rate toward that sweet spot
     private double targetExcitation;
     private double leakRate;
+
+    // Starting excitation and triggering threshold knob
     private double baselineExcitation;
     private double excitationThreshold;
+
+    // Gain scaling drives
     private double baselineGain;
     private double thresholdGain;
     private double surpriseGain;
+
+    // False-alarm dampener in [0.0, 1.0]: higher values choke off spurious activations
     private double dampeningFactor;
+
+    // If True, downstream teeth
     private boolean requireSurpriseRecruitment;
     private List<Silk> teethConnections = new ArrayList<>();
 
