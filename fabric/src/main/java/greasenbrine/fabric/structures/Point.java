@@ -82,10 +82,15 @@ public class Point {
         if (!(obj instanceof Point)) {
             return false;
         }
-        
+
         Point other = (Point) obj;
 
         return Arrays.equals(coordinates, other.coordinates);
+    }
+
+    @Override 
+    public int hashCode() {
+        return Arrays.hashCode(coordinates);
     }
 
     @Override 
