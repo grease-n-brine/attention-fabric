@@ -4,8 +4,12 @@ A minimal-dependency Java research framework investigating spatially organized, 
 
 The framework differs from a conventional artificial neural network in that it explores structural change rather than global parameter optimization through backpropagation. The experimental objective is to determine whether spatial position and local prediction error can form useful representations for continuous-function approximation.
 
-Each Silk is a stateful unit in a three-dimensional state space. A unit receives activity through receivers and emits transformed activity through teeth. Directed connections may join the teeth of one unit to the receivers of another, forming a network that is loosely tree-structured.
+Each Silk is a stateful unit in a three-dimensional state space. A unit receives an activity signal through receivers and emits a transformed signal through teeth. Directed connections join the teeth of one unit to the receivers of another, forming a loosely tree-structured network in which the signal is progressively transformed at each branch.
 
-A Silk maintains local state and parameters, including baseline excitation, firing threshold, and surprise damping. On each update, it combines incoming activity, compares observed activity with a local prediction, and computes a surprise measure. Surprise may increase or decrease activity propagation, influence connection formation or pruning, and guide movement within the state space. Exact update equations and control rules remain to be specified and will determine whether “spacetime,” trajectory formation, and migration are implemented mechanisms or merely conceptual descriptions.
+A Silk maintains local state and parameters, including baseline excitation, firing threshold, and surprise damping. It combines incoming activity, compares the observed activity with a local prediction, and computes surprise as the residual between the two. Surprise is not itself the signal propagated through the network: it is a control quantity that can raise excitation or suppress activity.
+
+When surprise increases excitation, the Silk may recruit additional units through new or existing teeth and transmit the corresponding signal onward. Recruitment propagates the transformed computational signal, while the residual regulates whether and how strongly that propagation occurs. Therefore, surprise can influence branching and the strength of transformation without becoming a separate network value. Exact update equations and recruitment rules remain to be specified. The spatial trajectories, branch formation, pruning, and migration behavior are proposed mechanisms until their implementation and evaluation are complete.
+
+
 
 
