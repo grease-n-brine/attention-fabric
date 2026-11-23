@@ -21,7 +21,7 @@ import greasenbrine.fabric.structures.Point;
  */
 
 public record SilkTick(
-    String silkID,
+    int silkID,
     long tick,
     Point position,
     Point receiverInput,
