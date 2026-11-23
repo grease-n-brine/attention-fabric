@@ -1,6 +1,7 @@
 package greasenbrine.fabric.structures;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Point {
     private final double[] coordinates;
@@ -71,6 +72,17 @@ public class Point {
             coordinates[0] / mag,
             coordinates[1] / mag,
             coordinates[2] / mag
+        });
+    }
+
+    public Point lerp(Point target, double t) {
+        Objects.requireNonNull(target, "Target point cannot be null");
+        double clamptedT = Math.max(0, Math.min(1, t));
+
+        return new Point(new double[] {
+            coordinates[0] + clamptedT * (target.get(0) - coordinates[0]),
+            coordinates[1] + clamptedT * (target.get(1) - coordinates[1]),
+            coordinates[2] + clamptedT * (target.get(2) - coordinates[2])
         });
     }
 
