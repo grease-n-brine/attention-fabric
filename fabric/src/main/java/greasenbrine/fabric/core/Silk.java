@@ -73,4 +73,8 @@ public class Silk {
         this.surpriseGain = surpriseGain;
         this.dampeningFactor = dampeningFactor;
    }
+
+    public void probeUpstreamTeeth(Silk upstreamSilk) {
+        upstreamSilk.teethConnections.add(this);
+    }
 }
