@@ -77,4 +77,18 @@ public class Silk {
     public void probeUpstreamTeeth(Silk upstreamSilk) {
         upstreamSilk.teethConnections.add(this);
     }
+
+    public List<Silk> pruneDeadBranches(Silk rootNode) {
+        for (int i = 0; i < rootNode.teethConnections.size(); i++) {
+            Silk child = rootNode.teethConnections.get(i);
+            
+            if (!child.alive) {
+                rootNode.teethConnections.remove(i);
+                i--;
+            } else {
+                pruneDeadBranches(child);
+            }
+        }
+        return rootNode.teethConnections;
+    }
 }
