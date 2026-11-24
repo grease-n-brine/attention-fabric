@@ -1,7 +1,6 @@
 package greasenbrine.fabric.core;
 
 import greasenbrine.fabric.structures.Point;
-import greasenbrine.fabric.core.SilkTick;
 import java.util.ArrayList;
 import java.util.List;
 
