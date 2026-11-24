@@ -7,9 +7,6 @@ import java.util.List;
 
 /**
  * A stateful, homeostatic, surprise-sensitive entity within the fabric network.
- * 
- * Key Dynamic:
- * - Signals arrive through a single logical receiver and pass through a sweet-spot
  */
 
 public class Silk {
