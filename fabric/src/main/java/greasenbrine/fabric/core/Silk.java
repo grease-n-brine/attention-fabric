@@ -78,15 +78,16 @@ public class Silk {
         upstreamSilk.teethConnections.add(this);
     }
 
-    public List<Silk> pruneDeadBranches(Silk rootNode) {
+    public List<Silk> pruneDeadSilks(Silk rootNode) {
         for (int i = 0; i < rootNode.teethConnections.size(); i++) {
             Silk child = rootNode.teethConnections.get(i);
-            
+
+            // remove and make Silks available for reuse
             if (!child.alive) {
                 rootNode.teethConnections.remove(i);
                 i--;
             } else {
-                pruneDeadBranches(child);
+                pruneDeadSilks(child);
             }
         }
         return rootNode.teethConnections;
