@@ -79,17 +79,33 @@ public class Silk {
     }
 
     public List<Silk> pruneDeadSilks(Silk rootNode) {
+        List<Silk> removedSilks = new ArrayList<>();
+
         for (int i = 0; i < rootNode.teethConnections.size(); i++) {
             Silk child = rootNode.teethConnections.get(i);
 
             // remove and make Silks available for reuse
             if (!child.alive) {
                 rootNode.teethConnections.remove(i);
+                removedSilks.add(child);
                 i--;
             } else {
-                pruneDeadSilks(child);
+                removedSilks.addAll(pruneDeadSilks(child));
             }
         }
-        return rootNode.teethConnections;
+        return removedSilks;
+    }
+
+    private void terminateSilk(Silk silk) {
+        if (silk != null && silk.alive) {
+            silk.alive = false;
+        }
+        else {
+            throw new IllegalStateException("Attempted to terminate a Silk that is either null or already dead.");
+        }
+    }
+
+    public boolean isAlive() {
+        return this.alive;
     }
 }
