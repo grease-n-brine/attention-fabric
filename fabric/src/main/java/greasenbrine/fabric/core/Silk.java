@@ -35,6 +35,23 @@ public class Silk {
     // False-alarm dampener in [0.0, 1.0]: higher values choke off spurious activations
     private double dampeningFactor;
 
+    // Current 3D excitation vector and local prediction
+    private Point excitation;
+    private Point expectedSignal;
+
+    // Cached results for downstream signal computations
+    private double lastDampedSurprise;
+    private boolean lastSweetSpotAlighned;
+    private boolean lastTriggered;
+    private boolean lastSurpriseBoosted;
+
+    // Co-firing and usefulness tracking
+    private int coFiringCount;
+    private double usefulnessSignal;
+    private boolean alive = true;
+    private long tickCount;
+
+    // Connections to downstream Silks (teeth)
     private List<Silk> teethConnections = new ArrayList<>();
 
     public Silk(
