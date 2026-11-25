@@ -78,8 +78,6 @@ public class Silk {
         );
         silkActivations.add(initialTick);
         seedInitialInput(new Point(new double[]{0, 0, 0}));
-
-        Point initialSurprise = new Point(new double[]{0, 0, 0});
     }
 
     public void resetHistory() {
