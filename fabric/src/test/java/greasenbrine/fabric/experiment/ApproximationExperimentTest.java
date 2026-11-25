@@ -21,7 +21,8 @@ class ApproximationExperimentTest {
         assertTrue(models.containsKey("mlp"));
         assertTrue(models.containsKey("fabric-static"));
         assertTrue(models.containsKey("fabric-full"));
-        assertEquals(8, models.size());
+        assertTrue(models.containsKey("fabric-full-passthrough"));
+        assertEquals(9, models.size());
     }
 
     @Test

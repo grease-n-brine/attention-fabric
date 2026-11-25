@@ -75,6 +75,9 @@ public final class ApproximationExperiment {
         m.put("fabric-full", seed -> new FabricRegressor(
             new SilkFabric(FabricParameters.defaults(CAPACITY), unitParameters, seed),
             READOUT_RATE, "fabric-full"));
+        m.put("fabric-full-passthrough", seed -> new FabricRegressor(
+            new SilkFabric(FabricParameters.defaults(CAPACITY).withRootPassThrough(true), unitParameters, seed),
+            READOUT_RATE, "fabric-full-passthrough"));
         return m;
     }
 
