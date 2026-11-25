@@ -3,14 +3,17 @@ package greasenbrine.fabric.visualization;
 import java.util.Random;
 
 /**
- * Stimulus used for the demonstration recording: a noisy sinusoid with a single
- * isolated pulse followed later by a train of closely spaced pulses, so that the
- * initial cascade and the subsequent decline in response are both visible.
+ * Stimulus used for the demonstration recording: a slowly varying noisy sinusoid
+ * with a single isolated pulse followed later by a train of closely spaced
+ * pulses, so that the initial cascade and the subsequent decline in response
+ * are both visible. The period is long enough that the exponential moving
+ * average expectation tracks the background without firing, which leaves
+ * recruitment to the pulses.
  */
 public final class DemonstrationStimulus {
 
     public static final int TICKS = 720;
-    public static final int PERIOD = 50;
+    public static final int PERIOD = 240;
     public static final double NOISE = 0.05;
     public static final double PULSE = 3.0;
     public static final int ISOLATED_PULSE_TICK = 180;
