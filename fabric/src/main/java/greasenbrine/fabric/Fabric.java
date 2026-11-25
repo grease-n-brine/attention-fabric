@@ -4,6 +4,9 @@
 
 package greasenbrine.fabric;
 
+import greasenbrine.fabric.core.Silk;
+import greasenbrine.fabric.structures.Point;
+
 /**
  *
  * @author nepsauce
@@ -11,6 +14,18 @@ package greasenbrine.fabric;
 public class Fabric {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        Silk silk = new Silk(
+            1,
+            new Point(new double[]{0, 0, 0}),
+            1.0,
+            0.1,
+            0.5,
+            0.7,
+            1.0,
+            1.2,
+            0.8,
+            0.1
+        );
+        
     }
 }
