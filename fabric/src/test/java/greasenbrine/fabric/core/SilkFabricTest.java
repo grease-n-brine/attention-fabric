@@ -162,7 +162,7 @@ class SilkFabricTest {
 
     @Test
     void quietLeavesArePrunedAfterBurst() {
-        FabricParameters p = new FabricParameters(4, 3, false, true, 0.01, 1.0, false, 0.0, 2.0);
+        FabricParameters p = new FabricParameters(4, 3, false, true, 0.01, 1.0, false, 0.0, 2.0, false);
         SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 5L);
         Silk root = f.getRoot();
         Silk leaf = f.getUnit(1);
@@ -183,7 +183,7 @@ class SilkFabricTest {
 
     @Test
     void branchesCollapseFromLeavesInward() {
-        FabricParameters p = new FabricParameters(4, 3, false, true, 0.0, 1.0, false, 0.0, 2.0);
+        FabricParameters p = new FabricParameters(4, 3, false, true, 0.0, 1.0, false, 0.0, 2.0, false);
         SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 5L);
         Silk root = f.getRoot();
         Silk mid = f.getUnit(1);
@@ -208,7 +208,7 @@ class SilkFabricTest {
 
     @Test
     void excitedUnitsMigrateAndStayWithinBounds() {
-        FabricParameters p = new FabricParameters(2, 3, false, false, 0.05, 0.0, true, 0.5, 1.0);
+        FabricParameters p = new FabricParameters(2, 3, false, false, 0.05, 0.0, true, 0.5, 1.0, false);
         SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 9L);
         Silk root = f.getRoot();
         var start = root.getPosition();
@@ -223,7 +223,7 @@ class SilkFabricTest {
 
     @Test
     void unitsAtOrBelowBaselineDoNotMigrate() {
-        FabricParameters p = new FabricParameters(2, 3, false, false, 0.05, 0.0, true, 0.5, 1.0);
+        FabricParameters p = new FabricParameters(2, 3, false, false, 0.05, 0.0, true, 0.5, 1.0, false);
         SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 9L);
         Silk root = f.getRoot();
         var start = root.getPosition();
@@ -235,7 +235,7 @@ class SilkFabricTest {
 
     @Test
     void dormantUnitsDoNotMigrate() {
-        FabricParameters p = new FabricParameters(3, 3, false, false, 0.05, 0.0, true, 0.5, 1.0);
+        FabricParameters p = new FabricParameters(3, 3, false, false, 0.05, 0.0, true, 0.5, 1.0, false);
         SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 9L);
         var start = f.getUnit(1).getPosition();
         for (int i = 0; i < 20; i++) {
@@ -259,6 +259,16 @@ class SilkFabricTest {
         for (int i = 0; i < 4; i++) {
             assertEquals(stepped[i], probed[i], 1e-12);
         }
+    }
+
+    @Test
+    void rootPassThroughEmitsInputUnchanged() {
+        SilkFabric f = new SilkFabric(staticParameters(3).withRootPassThrough(true), SilkParameters.defaults(), 1L);
+        f.attach(f.getRoot(), f.getUnit(1));
+        double[] out = f.probe(0.37);
+        assertEquals(0.37, out[0], 1e-12);
+        assertEquals(f.getUnit(1).transform(0.37), out[1], 1e-12);
+        assertFalse(f.getUnit(1).isPassThrough());
     }
 
     @Test
