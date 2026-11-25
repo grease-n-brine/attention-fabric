@@ -243,4 +243,29 @@ class SilkFabricTest {
         }
         assertEquals(start, f.getUnit(1).getPosition());
     }
+
+    @Test
+    void randomTreeAttachesEveryUnitWithinTeethLimit() {
+        SilkFabric f = new SilkFabric(staticParameters(20).withMaxTeeth(2), SilkParameters.defaults(), 4L);
+        f.attachAllAsRandomTree();
+        assertEquals(20, f.activeCount());
+        for (Silk unit : f.getUnits()) {
+            assertTrue(unit.getTeeth().size() <= 2);
+        }
+        for (int i = 1; i < 20; i++) {
+            assertTrue(f.isAttached(i));
+            assertTrue(f.getParent(i) != null);
+        }
+    }
+
+    @Test
+    void randomTreeIsDeterministicForSeed() {
+        SilkFabric a = new SilkFabric(staticParameters(12), SilkParameters.defaults(), 21L);
+        SilkFabric b = new SilkFabric(staticParameters(12), SilkParameters.defaults(), 21L);
+        a.attachAllAsRandomTree();
+        b.attachAllAsRandomTree();
+        for (int i = 1; i < 12; i++) {
+            assertEquals(a.getParent(i).getId(), b.getParent(i).getId());
+        }
+    }
 }
