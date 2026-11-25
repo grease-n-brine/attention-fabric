@@ -21,8 +21,7 @@ public class FabricRegressor implements OnlineRegressor {
 
     @Override
     public double predict(double input) {
-        fabric.step(input);
-        return readout.predict(fabric.outputs());
+        return readout.predict(fabric.probe(input));
     }
 
     @Override
