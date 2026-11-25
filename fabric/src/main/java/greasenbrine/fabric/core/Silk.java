@@ -75,12 +75,23 @@ public class Silk {
             false
         );
         silkActivations.add(initialTick);
-
-
     }
 
     public void resetHistory() {
         silkActivations.clear();
+    }
+
+    public boolean seedInitialInput(Point input) {
+        if (input == null) {
+            return false;
+        }
+        SilkTick tick = this.silkActivations.get(0);
+        tick.setReceiverInput(input);
+        return true;
+    }
+
+    public Point calculateSurprise() {
+        return new Point(new double[]{0, 0, 0});
     }
 
     public int getId() {
