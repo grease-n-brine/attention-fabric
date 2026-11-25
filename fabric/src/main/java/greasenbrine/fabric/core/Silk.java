@@ -94,9 +94,10 @@ public class Silk {
         return true;
     }
 
-    public Point calculateSurprise() {
+    public Point calculateSurprise(int tickIndex) {
         Point rawSurprise = new Point(new double[]{0, 0, 0});
 
+        SilkTick tick = silkActivations.get(tickIndex);
         
         return rawSurprise;
     }
