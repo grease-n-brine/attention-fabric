@@ -1,10 +1,11 @@
 package greasenbrine.fabric.visualization;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
 import greasenbrine.fabric.core.FabricParameters;
 import greasenbrine.fabric.core.SilkFabric;
 import greasenbrine.fabric.core.SilkParameters;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
  * Drives a fabric with the {@link DemonstrationStimulus} and renders frames

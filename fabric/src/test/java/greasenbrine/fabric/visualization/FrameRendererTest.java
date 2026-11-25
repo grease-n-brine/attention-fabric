@@ -1,14 +1,15 @@
 package greasenbrine.fabric.visualization;
 
+import java.awt.image.BufferedImage;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import greasenbrine.fabric.core.FabricParameters;
 import greasenbrine.fabric.core.SilkFabric;
 import greasenbrine.fabric.core.SilkParameters;
-import java.awt.image.BufferedImage;
-import org.junit.jupiter.api.Test;
 
 class FrameRendererTest {
 

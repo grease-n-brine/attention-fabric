@@ -1,8 +1,5 @@
 package greasenbrine.fabric.visualization;
 
-import greasenbrine.fabric.core.Silk;
-import greasenbrine.fabric.core.SilkFabric;
-import greasenbrine.fabric.structures.Point;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -16,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+
+import greasenbrine.fabric.core.Silk;
+import greasenbrine.fabric.core.SilkFabric;
+import greasenbrine.fabric.structures.Point;
 
 /**
  * Renders the state of a {@link SilkFabric} to an image: the bounding cube of
