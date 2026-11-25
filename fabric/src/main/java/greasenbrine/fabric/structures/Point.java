@@ -86,6 +86,26 @@ public class Point {
         });
     }
 
+    public Point add(Point other) {
+        Objects.requireNonNull(other, "Other point cannot be null");
+        if (this.getDimension() != other.getDimension()) {
+            throw new IllegalArgumentException("Points must have the same dimension");
+        }
+        double[] result = new double[coordinates.length];
+        for (int i = 0; i < coordinates.length; i++) {
+            result[i] = coordinates[i] + other.coordinates[i];
+        }
+        return new Point(result);
+    }
+
+    public Point scale(double factor) {
+        double[] result = new double[coordinates.length];
+        for (int i = 0; i < coordinates.length; i++) {
+            result[i] = coordinates[i] * factor;
+        }
+        return new Point(result);
+    }
+
     @Override 
     public boolean equals(Object obj) {
         if (this == obj){
