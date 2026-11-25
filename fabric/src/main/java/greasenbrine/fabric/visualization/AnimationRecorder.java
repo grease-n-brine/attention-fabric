@@ -14,10 +14,11 @@ import java.util.Locale;
  */
 public final class AnimationRecorder {
 
-    public static final int WIDTH = 800;
-    public static final int HEIGHT = 450;
+    public static final int WIDTH = 640;
+    public static final int HEIGHT = 360;
     public static final int STRIDE = 2;
     public static final int DELAY_CENTISECONDS = 7;
+    public static final int PALETTE_SIZE = 128;
 
     private AnimationRecorder() {
     }
@@ -25,7 +26,7 @@ public final class AnimationRecorder {
     public static int record(Path file, long seed) throws IOException {
         Files.createDirectories(file.toAbsolutePath().getParent());
         try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(file));
-             GifSequenceWriter gif = new GifSequenceWriter(out, DELAY_CENTISECONDS, true)) {
+             GifSequenceWriter gif = new GifSequenceWriter(out, DELAY_CENTISECONDS, true, PALETTE_SIZE)) {
             return Demonstration.run(seed, WIDTH, HEIGHT, STRIDE, (tick, frame) -> gif.writeFrame(frame));
         }
     }
