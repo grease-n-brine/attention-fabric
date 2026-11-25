@@ -68,6 +68,47 @@ public class SilkFabric {
         if (parameters.pruningEnabled()) {
             prune();
         }
+        if (parameters.migrationEnabled()) {
+            migrate();
+        }
+    }
+
+    /**
+     * Attached units whose excitation exceeds their baseline move along a random
+     * direction by a distance proportional to the deviation. Positions remain
+     * within the configured bound.
+     */
+    private void migrate() {
+        double bound = parameters.positionBound();
+        for (int i = 0; i < units.size(); i++) {
+            if (!attached[i]) {
+                continue;
+            }
+            Silk unit = units.get(i);
+            double deviation = unit.getDeviation();
+            if (deviation <= 0.0) {
+                continue;
+            }
+            Point displacement = randomDirection().scale(parameters.migrationStep() * deviation);
+            Point moved = unit.getPosition().add(displacement);
+            unit.moveTo(new Point(new double[]{
+                clamp(moved.getX(), -bound, bound),
+                clamp(moved.getY(), -bound, bound),
+                clamp(moved.getZ(), -bound, bound)
+            }));
+        }
+    }
+
+    private Point randomDirection() {
+        Point p;
+        do {
+            p = new Point(new double[]{random.nextGaussian(), random.nextGaussian(), random.nextGaussian()});
+        } while (p.magnitude() == 0.0);
+        return p.normalize();
+    }
+
+    private static double clamp(double value, double low, double high) {
+        return Math.max(low, Math.min(high, value));
     }
 
     /**
