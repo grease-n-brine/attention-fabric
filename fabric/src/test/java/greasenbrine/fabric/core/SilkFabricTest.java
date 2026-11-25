@@ -117,4 +117,46 @@ class SilkFabricTest {
         assertSame(a, f.getParent(2));
         assertEquals(a.getLastOutput(), b.getHistory().get(0).input(), 1e-12);
     }
+
+    @Test
+    void firingRootRecruitsNearestDormantUnit() {
+        FabricParameters p = staticParameters(6).withRecruitment(true);
+        SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 11L);
+        Silk root = f.getRoot();
+
+        Silk nearest = null;
+        double best = Double.POSITIVE_INFINITY;
+        for (int i = 1; i < 6; i++) {
+            double d = f.getUnit(i).getPosition().getDistanceTo(root.getPosition());
+            if (d < best) {
+                best = d;
+                nearest = f.getUnit(i);
+            }
+        }
+
+        f.step(5.0);
+        f.step(5.0);
+        assertTrue(f.getRoot().getHistory().get(1).fired());
+        assertTrue(f.isAttached(nearest.getId()));
+        assertSame(root, f.getParent(nearest.getId()));
+    }
+
+    @Test
+    void recruitmentIsBoundedByCapacity() {
+        FabricParameters p = staticParameters(5).withRecruitment(true).withMaxTeeth(10);
+        SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 2L);
+        for (int i = 0; i < 200; i++) {
+            f.step(i % 2 == 0 ? 5.0 : -5.0);
+        }
+        assertEquals(5, f.activeCount());
+    }
+
+    @Test
+    void noRecruitmentWhenDisabled() {
+        SilkFabric f = fabric(5, 2L);
+        for (int i = 0; i < 50; i++) {
+            f.step(i % 2 == 0 ? 5.0 : -5.0);
+        }
+        assertEquals(1, f.activeCount());
+    }
 }
