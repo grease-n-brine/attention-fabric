@@ -54,6 +54,10 @@ public class Silk {
         this.dampeningFactor = dampeningFactor;
    }
 
+   public void step() {
+
+   }
+
    public int getId() {
        return id;
    }
