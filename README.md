@@ -26,6 +26,22 @@ Ten seeds were used for every stochastic configuration. All results are reproduc
 
 The mechanism supports the anomaly-response component of the hypothesis and does not, in its present form, support the function-approximation component.
 
+## Visualization
+
+![Fabric of 96 units responding to pulses in a slowly varying signal](media/attention-fabric.gif)
+
+The recording shows a fabric of 96 units over 720 ticks from a camera orbiting the state space once. The background is a sinusoid of period 240 with Gaussian noise; an isolated pulse of amplitude 3.0 arrives at tick 180 and a train of pulses at interval 10 runs from tick 400 to tick 600. Attached units are drawn as discs whose radius and color follow excitation (blue at rest, through yellow, to red at three times the firing threshold), dormant units as small grey points, directed connections as lines from parent to child, the root with a thin outline, and units that fired on the current tick with a white ring. The panel at the bottom shows the most recent 200 inputs with pulses marked in red.
+
+The isolated pulse produces a burst of firing at the root, which recruits nearby dormant units; the recruited units then fire on the transformed signal and recruit further. During the pulse train the cascades become smaller as baselines rise, leaves whose excitation falls below baseline are pruned and return to the pool, and excited units drift along random trajectories. The slow background period was chosen so that the expectation tracks it without firing, leaving recruitment to the pulses; with the period of 50 used in Experiment 2 the background alone recruits most of the pool before any pulse arrives, as reported in the manuscript.
+
+The animation is rendered with the JDK alone, uses a fixed 128-color palette without dithering, and is byte-reproducible for a given seed.
+
+```sh
+./render-animation.sh          # writes media/attention-fabric.gif (seed 0)
+./render-animation.sh 7        # different seed
+FRAMES=1 ./render-animation.sh # writes 1280x720 PNG frames to media/frames/ instead
+```
+
 ## Repository layout
 
 ```
@@ -33,10 +49,12 @@ fabric/src/main/java/greasenbrine/fabric/
   core/        Silk, SilkParameters, SilkTick, FabricParameters, SilkFabric
   learning/    LinearReadout, OnlineRegressor, baselines, FabricRegressor
   experiment/  SingleUnitExperiment, HabituationExperiment, ApproximationExperiment, ExperimentRunner
+  visualization/ Camera, FrameRenderer, Palette, GifSequenceWriter, Demonstration, recorders
   structures/  Point
   math/        Matrix
-fabric/src/test/java/   62 unit tests
+fabric/src/test/java/   94 unit tests
 results/                CSV outputs and environment record
+media/                  demonstration animation
 manuscript/             manuscript.md
 ```
 

@@ -4,6 +4,9 @@
 # Maven build output
 target/
 
+# Rendered frame sequences
+media/frames/
+
 # Log file
 *.log
 
