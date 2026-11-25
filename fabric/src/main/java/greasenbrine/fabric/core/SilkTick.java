@@ -9,6 +9,7 @@ import greasenbrine.fabric.structures.Point;
  * @tick The current tick number of the simulation.
  * @position The 3D position of the silk at this tick.
  * @receiverInput The input received by the silk at this tick.
+ * @expectedInput The input expected by the silk at this tick.
  * @excitation The excitation of the silk at this tick.
  * @targetExcitation The target excitation level of the silk.
  * @excitationThreshold The maximum excitation the silk can have.
@@ -21,25 +22,27 @@ import greasenbrine.fabric.structures.Point;
  */
 
 public class SilkTick {
-    public int silkID;
-    public long tick;
-    public Point position;
-    public Point receiverInput;
-    public Point excitation;
-    public double targetExcitation;
-    public double excitationThreshold;
-    public double rawSurprise;
-    public double dampedSurprise;
-    public double dampeningFactor;
-    public boolean triggered;
-    public boolean surpriseBoosted;
-    public boolean recruiting;
+    private final int silkID;
+    private final long tick;
+    private final Point position;
+    private Point receiverInput;
+    private Point expectedInput;
+    private final Point excitation;
+    private final double targetExcitation;
+    private final double excitationThreshold;
+    private final double rawSurprise;
+    private final double dampedSurprise;
+    private final double dampeningFactor;
+    private final boolean triggered;
+    private final boolean surpriseBoosted;
+    private final boolean recruiting;
 
     public SilkTick(
         int silkID,
         long tick,
         Point position,
         Point receiverInput,
+        Point expectedInput,
         Point excitation,
         double targetExcitation,
         double excitationThreshold,
@@ -54,6 +57,7 @@ public class SilkTick {
         this.tick = tick;
         this.position = position;
         this.receiverInput = receiverInput;
+        this.expectedInput = expectedInput;
         this.excitation = excitation;
         this.targetExcitation = targetExcitation;
         this.excitationThreshold = excitationThreshold;
@@ -66,7 +70,25 @@ public class SilkTick {
     }
 
     public void setReceiverInput(Point input) {
-        this.receiverInput = input;
+        receiverInput = input;
     }
+
+    public void setExpectedInput(Point input) {
+        expectedInput = input;
+    }
+
+    public int getSilkID() { return silkID; }
+    public long getTick() { return tick; }
+    public Point getPosition() { return position; }
+    public Point getReceiverInput() { return receiverInput; }
+    public Point getExpectedInput() { return expectedInput; }
+    public Point getExcitation() { return excitation; }
+    public double getTargetExcitation() { return targetExcitation; }
+    public double getExcitationThreshold() { return excitationThreshold; }
+    public double getRawSurprise() { return rawSurprise; }
+    public double getDampedSurprise() { return dampedSurprise; }
+    public double getDampeningFactor() { return dampeningFactor; }
+    public boolean isTriggered() { return triggered; }
+    public boolean isSurpriseBoosted() { return surpriseBoosted; }
+    public boolean isRecruiting() { return recruiting; }
 }
-    
