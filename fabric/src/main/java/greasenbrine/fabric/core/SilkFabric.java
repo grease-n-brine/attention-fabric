@@ -61,6 +61,43 @@ public class SilkFabric {
             }
         }
         tickCount++;
+
+        if (parameters.recruitmentEnabled()) {
+            recruit();
+        }
+    }
+
+    /**
+     * Each unit that fired this tick and has spare teeth attaches the nearest
+     * dormant unit, so that a firing burst recruits additional computational
+     * branches around the excited region of the state space.
+     */
+    private void recruit() {
+        for (Silk excited : firedThisTick) {
+            if (excited.getTeeth().size() >= parameters.maxTeeth()) {
+                continue;
+            }
+            Silk candidate = nearestDormant(excited.getPosition());
+            if (candidate != null) {
+                attach(excited, candidate);
+            }
+        }
+    }
+
+    private Silk nearestDormant(Point origin) {
+        Silk best = null;
+        double bestDistance = Double.POSITIVE_INFINITY;
+        for (int i = 1; i < units.size(); i++) {
+            if (attached[i]) {
+                continue;
+            }
+            double d = units.get(i).getPosition().getDistanceTo(origin);
+            if (d < bestDistance) {
+                bestDistance = d;
+                best = units.get(i);
+            }
+        }
+        return best;
     }
 
     /** Output vector of length {@code capacity}; dormant units contribute zero. */
