@@ -14,7 +14,43 @@ Prediction error, or surprise, is not the propagated signal. It is a residual co
 
 During network exploration, Silk units may migrate along randomized trajectories. Migration allows units to encounter new signal regions or connection partners. Excitation above the adapted baseline marks active exploration or weak local representation, while excitation below the baseline may mark weak or unproductive branches eligible for probabilistic pruning.
 
-The gain, leakage, surprise, recruitment, pruning, and migration rules are implemented and tested incrementally. This README presents the proposed mechanism as a working hypothesis; experiments will determine which assumptions hold and how the mechanism performs relative to established approaches.
+The gain, leakage, surprise, recruitment, pruning, and migration rules are implemented and tested. The experiments below evaluate which parts of the hypothesis hold and how the mechanism performs relative to established approaches. The complete account is in [manuscript/manuscript.md](manuscript/manuscript.md).
+
+## Findings
+
+Ten seeds were used for every stochastic configuration. All results are reproducible to the byte and are committed under `results/`.
+
+- **Single unit.** Surprise under constant input fell from 1.000 to 0.014 in 20 ticks. A step change produced a surprise of 2.012, which fell to 10 percent of that value within 11 ticks. The response to a second change was delayed by one tick and the firing burst shortened from 13 ticks to 9 because the baseline had risen.
+- **Anomaly response and habituation.** Under rare pulses every pulse elicited firing throughout the run. Under frequent pulses with a slow baseline ($\beta = 0.01$), firing probability at pulses declined from 0.614 to 0.471 over the run; with a fast baseline ($\beta = 0.2$) no decline occurred. Habituation requires a baseline time constant longer than the inter-stimulus interval. At the network level the firing cascade at rare pulses declined from 3.85 to 1.90 units, and the background sinusoid alone recruited two thirds of the pool before any pulse arrived.
+- **Function approximation.** On four targets the full fabric achieved test errors between 0.070 and 0.188, between the affine baseline and fixed random features of the same family and capacity (0.00004 to 0.003). Replacing the root transform with the identity reduced fabric error by a factor of 3 to 10, identifying the root nonlinearity as the main limitation. Pruning reduced the active pool to between 23 and 37 units in some seeds and raised error above the affine baseline in those runs, because readout weights indexed by unit identity do not survive re-attachment.
+
+The mechanism supports the anomaly-response component of the hypothesis and does not, in its present form, support the function-approximation component.
+
+## Repository layout
+
+```
+fabric/src/main/java/greasenbrine/fabric/
+  core/        Silk, SilkParameters, SilkTick, FabricParameters, SilkFabric
+  learning/    LinearReadout, OnlineRegressor, baselines, FabricRegressor
+  experiment/  SingleUnitExperiment, HabituationExperiment, ApproximationExperiment, ExperimentRunner
+  structures/  Point
+  math/        Matrix
+fabric/src/test/java/   62 unit tests
+results/                CSV outputs and environment record
+manuscript/             manuscript.md
+```
+
+## Reproduction
+
+Requirements: JDK 26 or later (as set by `maven.compiler.release`) and Maven 3.
+
+```sh
+mvn -f fabric/pom.xml test      # run the unit tests
+./run-experiments.sh            # run all experiments; writes results/ (about 30 s)
+./run-experiments.sh 20         # same, with 20 seeds
+```
+
+Model and structural parameters are recorded in `results/environment.txt` after each run.
 
 
 
