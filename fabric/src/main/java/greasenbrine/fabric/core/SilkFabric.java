@@ -65,6 +65,35 @@ public class SilkFabric {
         if (parameters.recruitmentEnabled()) {
             recruit();
         }
+        if (parameters.pruningEnabled()) {
+            prune();
+        }
+    }
+
+    /**
+     * Leaf units whose excitation has fallen below their adaptive baseline by at
+     * least the prune margin are detached with the configured probability.
+     * Eligibility is evaluated against the structure at the start of the phase,
+     * so a parent cannot be pruned in the same tick as its last child.
+     */
+    private void prune() {
+        List<Silk> toDetach = new ArrayList<>();
+        for (int i = 1; i < units.size(); i++) {
+            if (!attached[i]) {
+                continue;
+            }
+            Silk unit = units.get(i);
+            if (!unit.getTeeth().isEmpty()) {
+                continue;
+            }
+            if (unit.getDeviation() < -parameters.pruneMargin()
+                && random.nextDouble() < parameters.pruneProbability()) {
+                toDetach.add(unit);
+            }
+        }
+        for (Silk unit : toDetach) {
+            detach(unit);
+        }
     }
 
     /**
