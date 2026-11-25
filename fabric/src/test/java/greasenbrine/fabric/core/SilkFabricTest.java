@@ -205,4 +205,42 @@ class SilkFabricTest {
         assertFalse(f.isAttached(1));
         assertEquals(1, f.activeCount());
     }
+
+    @Test
+    void excitedUnitsMigrateAndStayWithinBounds() {
+        FabricParameters p = new FabricParameters(2, 3, false, false, 0.05, 0.0, true, 0.5, 1.0);
+        SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 9L);
+        Silk root = f.getRoot();
+        var start = root.getPosition();
+
+        for (int i = 0; i < 50; i++) {
+            f.step(i % 2 == 0 ? 5.0 : -5.0);
+            var pos = root.getPosition();
+            assertTrue(Math.abs(pos.getX()) <= 1.0 && Math.abs(pos.getY()) <= 1.0 && Math.abs(pos.getZ()) <= 1.0);
+        }
+        assertTrue(root.getPosition().getDistanceTo(start) > 0.0);
+    }
+
+    @Test
+    void unitsAtOrBelowBaselineDoNotMigrate() {
+        FabricParameters p = new FabricParameters(2, 3, false, false, 0.05, 0.0, true, 0.5, 1.0);
+        SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 9L);
+        Silk root = f.getRoot();
+        var start = root.getPosition();
+        for (int i = 0; i < 20; i++) {
+            f.step(0.0);
+        }
+        assertEquals(start, root.getPosition());
+    }
+
+    @Test
+    void dormantUnitsDoNotMigrate() {
+        FabricParameters p = new FabricParameters(3, 3, false, false, 0.05, 0.0, true, 0.5, 1.0);
+        SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 9L);
+        var start = f.getUnit(1).getPosition();
+        for (int i = 0; i < 20; i++) {
+            f.step(i % 2 == 0 ? 5.0 : -5.0);
+        }
+        assertEquals(start, f.getUnit(1).getPosition());
+    }
 }
