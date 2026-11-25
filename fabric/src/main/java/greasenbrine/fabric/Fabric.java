@@ -26,6 +26,10 @@ public class Fabric {
             0.8,
             0.1
         );
-        
+        silk.initialize();
+
+        Point previousSurprise = new Point(new double[]{0, 0, 0});
+        previousSurprise = silk.calculateSurprise(0);
+        Point currentSurprise = silk.calculateSurprise(0);
     }
 }
