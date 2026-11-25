@@ -16,7 +16,8 @@ import javax.imageio.stream.ImageOutputStream;
 
 /**
  * Writes an animated GIF using the image writer bundled with the JDK. Frames
- * are quantized to the default indexed palette before encoding.
+ * are quantized either with a fixed {@link Palette} derived from the first
+ * frame, or with the default indexed color model when no palette size is given.
  */
 public final class GifSequenceWriter implements AutoCloseable {
 
@@ -24,6 +25,8 @@ public final class GifSequenceWriter implements AutoCloseable {
     private final ImageOutputStream output;
     private final IIOMetadata metadata;
     private final ImageWriteParam params;
+    private final int paletteSize;
+    private Palette palette;
     private int frames;
 
     /**
@@ -32,9 +35,22 @@ public final class GifSequenceWriter implements AutoCloseable {
      * @param loop              whether the animation repeats indefinitely
      */
     public GifSequenceWriter(OutputStream stream, int delayCentiseconds, boolean loop) throws IOException {
+        this(stream, delayCentiseconds, loop, 0);
+    }
+
+    /**
+     * @param paletteSize number of colors in the fixed palette built from the
+     *                    first frame, or 0 to use the default color model
+     */
+    public GifSequenceWriter(OutputStream stream, int delayCentiseconds, boolean loop, int paletteSize)
+            throws IOException {
         if (delayCentiseconds < 1) {
             throw new IllegalArgumentException("delayCentiseconds must be at least 1");
         }
+        if (paletteSize != 0 && (paletteSize < 2 || paletteSize > Palette.MAX_SIZE)) {
+            throw new IllegalArgumentException("paletteSize must be 0 or lie in [2, " + Palette.MAX_SIZE + "]");
+        }
+        this.paletteSize = paletteSize;
         Iterator<ImageWriter> writers = ImageIO.getImageWritersBySuffix("gif");
         if (!writers.hasNext()) {
             throw new IOException("no GIF image writer available");
@@ -51,8 +67,15 @@ public final class GifSequenceWriter implements AutoCloseable {
     }
 
     public void writeFrame(BufferedImage frame) throws IOException {
-        BufferedImage indexed = frame;
-        if (frame.getType() != BufferedImage.TYPE_BYTE_INDEXED) {
+        BufferedImage indexed;
+        if (paletteSize > 0) {
+            if (palette == null) {
+                palette = Palette.fromImage(frame, paletteSize);
+            }
+            indexed = palette.apply(frame);
+        } else if (frame.getType() == BufferedImage.TYPE_BYTE_INDEXED) {
+            indexed = frame;
+        } else {
             indexed = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_BYTE_INDEXED);
             Graphics2D g = indexed.createGraphics();
             g.drawImage(frame, 0, 0, null);

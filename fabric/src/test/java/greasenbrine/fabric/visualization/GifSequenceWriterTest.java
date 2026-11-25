@@ -76,4 +76,26 @@ class GifSequenceWriterTest {
         assertThrows(IllegalArgumentException.class,
             () -> new GifSequenceWriter(new ByteArrayOutputStream(), 0, true));
     }
+
+    @Test
+    void fixedPaletteProducesSmallerOutputForFlatFrames() throws IOException {
+        ByteArrayOutputStream dithered = new ByteArrayOutputStream();
+        ByteArrayOutputStream fixed = new ByteArrayOutputStream();
+        try (GifSequenceWriter a = new GifSequenceWriter(dithered, 5, true);
+             GifSequenceWriter b = new GifSequenceWriter(fixed, 5, true, 64)) {
+            for (int i = 0; i < 4; i++) {
+                a.writeFrame(frame(i * 40));
+                b.writeFrame(frame(i * 40));
+            }
+        }
+        assertTrue(fixed.size() < dithered.size(), fixed.size() + " vs " + dithered.size());
+    }
+
+    @Test
+    void rejectsInvalidPaletteSize() {
+        assertThrows(IllegalArgumentException.class,
+            () -> new GifSequenceWriter(new ByteArrayOutputStream(), 5, true, 1));
+        assertThrows(IllegalArgumentException.class,
+            () -> new GifSequenceWriter(new ByteArrayOutputStream(), 5, true, 300));
+    }
 }
