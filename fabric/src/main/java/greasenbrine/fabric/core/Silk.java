@@ -28,8 +28,6 @@ public class Silk {
     // False-alarm dampener in [0.0, 1.0]: higher values choke off spurious activations
     private double dampeningFactor;
 
-    // If True, downstream teeth
-    private boolean requireSurpriseRecruitment;
     private List<Silk> teethConnections = new ArrayList<>();
 
     public Silk(
@@ -42,8 +40,7 @@ public class Silk {
         double baselineGain,
         double thresholdGain,
         double surpriseGain,
-        double dampeningFactor,
-        boolean requireSurpriseRecruitment
+        double dampeningFactor
 ) {
         this.id = id;
         this.position = initialPosition;
@@ -55,6 +52,53 @@ public class Silk {
         this.thresholdGain = thresholdGain;
         this.surpriseGain = surpriseGain;
         this.dampeningFactor = dampeningFactor;
-        this.requireSurpriseRecruitment = requireSurpriseRecruitment;
+   }
+
+   public void step() {
+
+   }
+
+   public int getId() {
+       return id;
+   }
+   
+   public Point getPosition() {
+       return position;
+   }    
+
+   public double getTargetExcitation() {
+       return targetExcitation;
+   }
+
+   public double getLeakRate() {
+       return leakRate;
+   }
+
+   public double getBaselineExcitation() {
+       return baselineExcitation;
+   }
+
+   public double getExcitationThreshold() {
+       return excitationThreshold;
+   }
+
+   public double getBaselineGain() {
+       return baselineGain;
+   }
+
+   public double getThresholdGain() {
+       return thresholdGain;
+   }
+
+   public double getSurpriseGain() {
+       return surpriseGain;
+   }
+
+   public double getDampeningFactor() {
+       return dampeningFactor;
+   }
+
+   public List<Silk> getTeethConnections() {
+       return teethConnections;
    }
 }

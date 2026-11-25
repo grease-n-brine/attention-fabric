@@ -1,16 +1,20 @@
-# Attention Fabric
+# Can spatially organized Silk networks regulate excitation and adapt to anomalous patterns in continuous signals?
 
-A minimal-dependency Java research framework investigating spatially organized, surprise-damped directed networks composed of hypothetical units called Silk. Each unit may adapt its position, prune or form connections, and generate coordinate-conditioned nonlinear outputs within a three-dimensional state space. The project explores whether local prediction error and spatial organization can support continuous-function approximation without global backpropagation.
+Attention Fabric is a minimal-dependency Java research framework investigating whether local prediction error, excitation dynamics, and spatially organized directed connections can detect anomalies and support continuous-function approximation. Its units, called Silk, adapt their positions, form or prune connections, and generate coordinate-conditioned nonlinear outputs within a three-dimensional state space.
 
-The framework differs from a conventional artificial neural network in that it explores structural change rather than global parameter optimization through backpropagation. The experimental objective is to determine whether spatial position and local prediction error can form useful representations for continuous-function approximation.
+The central hypothesis is that Silk units regulate excitation by converging toward locally stable states. Normal signals reduce excitation and disturbance, whereas unfamiliar or anomalous activity produces a residual that can trigger a chain reaction of firing, recruitment, migration, and structural adaptation. If an initially anomalous pattern occurs repeatedly, the network adapts and reduces its response, recognizing that the pattern has become normal behavior.
+
+The framework differs from a typical artificial neural network by investigating this homeostatic and structural adaptation rather than updating a fixed network through global parameter optimization. The network does not process anomalies as a separate category: anomaly is inferred from persistent excitation and prediction residual relative to a unit's adapted baseline.
 
 Each Silk is a stateful unit in a three-dimensional state space. A unit receives an activity signal through receivers and emits a transformed signal through teeth. Directed connections join the teeth of one unit to the receivers of another, forming a loosely tree-structured network in which the signal is progressively transformed at each branch.
 
-Each Silk has current excitation, baseline excitation, excitation gain, and a leakage rate. Incoming signals increase excitation according to gain, while leakage removes activity over time. As gain and leakage balance, excitation approaches a stable level, and the baseline slowly adapts toward that level.
+Each Silk has current excitation, baseline excitation, excitation gain, and a leakage rate. Incoming signals increase excitation according to gain, while leakage removes activity over time. As gain and leakage balance, excitation approaches a stable level, and the baseline adapts toward that level.
 
-Prediction error, or surprise, is not itself the propagated signal. It is a residual control quantity that can alter excitation, firing, connection formation, and pruning. Unusually high excitation may indicate unfamiliar input and trigger additional Silk units to receive the signal. Excitation below the baseline may mark weak or unproductive branches, making them eligible for probabilistic pruning.
+Prediction error, or surprise, is not the propagated signal. It is a residual control quantity that may alter excitation, firing, connection formation, and pruning. An unusually large residual indicates insufficient local adaptation and can trigger additional Silk units to receive and process the signal. Frequent repetition allows the local equilibrium and baseline to absorb the pattern, gradually reducing excitation, firing, and recruitment for it.
 
-During network exploration, Silk units may migrate along randomized trajectories. Migration allows units to encounter new signal regions or connection partners. Subsequent stability, excitation response, and prediction accuracy determine whether the resulting branches remain or are pruned. Exact gain, leakage, surprise, recruitment, pruning, and migration rules remain to be specified. These mechanisms are proposed research behaviors until their implementation and evaluation are complete.
+During network exploration, Silk units may migrate along randomized trajectories. Migration allows units to encounter new signal regions or connection partners. Excitation above the adapted baseline marks active exploration or weak local representation, while excitation below the baseline may mark weak or unproductive branches eligible for probabilistic pruning.
+
+The gain, leakage, surprise, recruitment, pruning, and migration rules are implemented and tested incrementally. This README presents the proposed mechanism as a working hypothesis; experiments will determine which assumptions hold and how the mechanism performs relative to established approaches.
 
 
 
