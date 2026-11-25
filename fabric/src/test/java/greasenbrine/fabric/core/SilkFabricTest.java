@@ -245,6 +245,23 @@ class SilkFabricTest {
     }
 
     @Test
+    void probeMatchesStepOutputsWithoutMutation() {
+        SilkFabric f = fabric(4, 1L);
+        f.attach(f.getRoot(), f.getUnit(1));
+        f.attach(f.getUnit(1), f.getUnit(2));
+
+        double[] probed = f.probe(0.6);
+        assertEquals(0, f.getRoot().getTickCount());
+        assertEquals(0.0, probed[3]);
+
+        f.step(0.6);
+        double[] stepped = f.outputs();
+        for (int i = 0; i < 4; i++) {
+            assertEquals(stepped[i], probed[i], 1e-12);
+        }
+    }
+
+    @Test
     void randomTreeAttachesEveryUnitWithinTeethLimit() {
         SilkFabric f = new SilkFabric(staticParameters(20).withMaxTeeth(2), SilkParameters.defaults(), 4L);
         f.attachAllAsRandomTree();

@@ -179,6 +179,27 @@ public class SilkFabric {
         return out;
     }
 
+    /**
+     * Computes the output vector the tree would emit for {@code input} without
+     * altering any unit state or structure. Used for evaluation.
+     */
+    public double[] probe(double input) {
+        double[] out = new double[units.size()];
+        Deque<Silk> queue = new ArrayDeque<>();
+        Silk root = units.get(0);
+        out[0] = root.transform(input);
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            Silk current = queue.poll();
+            double signal = out[current.getId()];
+            for (Silk child : current.getTeeth()) {
+                out[child.getId()] = child.transform(signal);
+                queue.add(child);
+            }
+        }
+        return out;
+    }
+
     public int activeCount() {
         int count = 0;
         for (boolean a : attached) {
