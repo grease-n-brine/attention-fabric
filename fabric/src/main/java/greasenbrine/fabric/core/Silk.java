@@ -93,4 +93,8 @@ public class Silk {
    public double getDampeningFactor() {
        return dampeningFactor;
    }
+
+   public List<Silk> getTeethConnections() {
+       return teethConnections;
+   }
 }
