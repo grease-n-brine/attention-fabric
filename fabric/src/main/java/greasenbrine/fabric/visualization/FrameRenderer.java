@@ -30,7 +30,8 @@ public final class FrameRenderer {
     private static final Color EDGE = new Color(0x7a, 0x86, 0xa0, 0xb0);
     private static final Color DORMANT = new Color(0x4a, 0x50, 0x60);
     private static final Color CALM = new Color(0x3c, 0x8c, 0xd8);
-    private static final Color EXCITED = new Color(0xf2, 0x8c, 0x28);
+    private static final Color MID = new Color(0xe8, 0xd8, 0x4a);
+    private static final Color EXCITED = new Color(0xf0, 0x5a, 0x28);
     private static final Color FIRED = Color.WHITE;
     private static final Color TEXT = new Color(0xd8, 0xdc, 0xe4);
     private static final Color SIGNAL = new Color(0x9a, 0xd0, 0x8a);
@@ -122,7 +123,7 @@ public final class FrameRenderer {
             if (d.attached()) {
                 double level = Math.min(1.0, d.unit().getExcitation() / excitationScale);
                 radius = (4.0 + 9.0 * level) * scale;
-                fill = blend(CALM, EXCITED, level);
+                fill = level < 0.5 ? blend(CALM, MID, level * 2.0) : blend(MID, EXCITED, (level - 0.5) * 2.0);
             } else {
                 radius = 2.5 * scale;
                 fill = DORMANT;
