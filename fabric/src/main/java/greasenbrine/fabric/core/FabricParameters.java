@@ -13,6 +13,7 @@ package greasenbrine.fabric.core;
  *   <li>{@code migrationEnabled}: whether units above baseline move along random trajectories.</li>
  *   <li>{@code migrationStep}: displacement per unit of positive deviation.</li>
  *   <li>{@code positionBound}: half-width of the cube within which positions are confined.</li>
+ *   <li>{@code rootPassThrough}: diagnostic flag; the root emits its input unchanged.</li>
  * </ul>
  */
 public record FabricParameters(
@@ -24,7 +25,8 @@ public record FabricParameters(
     double pruneProbability,
     boolean migrationEnabled,
     double migrationStep,
-    double positionBound
+    double positionBound,
+    boolean rootPassThrough
 ) {
     public FabricParameters {
         if (capacity < 1) {
@@ -48,22 +50,26 @@ public record FabricParameters(
     }
 
     public static FabricParameters defaults(int capacity) {
-        return new FabricParameters(capacity, 3, true, true, 0.05, 0.05, true, 0.01, 2.0);
+        return new FabricParameters(capacity, 3, true, true, 0.05, 0.05, true, 0.01, 2.0, false);
     }
 
     public FabricParameters withRecruitment(boolean enabled) {
-        return new FabricParameters(capacity, maxTeeth, enabled, pruningEnabled, pruneMargin, pruneProbability, migrationEnabled, migrationStep, positionBound);
+        return new FabricParameters(capacity, maxTeeth, enabled, pruningEnabled, pruneMargin, pruneProbability, migrationEnabled, migrationStep, positionBound, rootPassThrough);
     }
 
     public FabricParameters withPruning(boolean enabled) {
-        return new FabricParameters(capacity, maxTeeth, recruitmentEnabled, enabled, pruneMargin, pruneProbability, migrationEnabled, migrationStep, positionBound);
+        return new FabricParameters(capacity, maxTeeth, recruitmentEnabled, enabled, pruneMargin, pruneProbability, migrationEnabled, migrationStep, positionBound, rootPassThrough);
     }
 
     public FabricParameters withMigration(boolean enabled) {
-        return new FabricParameters(capacity, maxTeeth, recruitmentEnabled, pruningEnabled, pruneMargin, pruneProbability, enabled, migrationStep, positionBound);
+        return new FabricParameters(capacity, maxTeeth, recruitmentEnabled, pruningEnabled, pruneMargin, pruneProbability, enabled, migrationStep, positionBound, rootPassThrough);
     }
 
     public FabricParameters withMaxTeeth(int value) {
-        return new FabricParameters(capacity, value, recruitmentEnabled, pruningEnabled, pruneMargin, pruneProbability, migrationEnabled, migrationStep, positionBound);
+        return new FabricParameters(capacity, value, recruitmentEnabled, pruningEnabled, pruneMargin, pruneProbability, migrationEnabled, migrationStep, positionBound, rootPassThrough);
+    }
+
+    public FabricParameters withRootPassThrough(boolean enabled) {
+        return new FabricParameters(capacity, maxTeeth, recruitmentEnabled, pruningEnabled, pruneMargin, pruneProbability, migrationEnabled, migrationStep, positionBound, enabled);
     }
 }

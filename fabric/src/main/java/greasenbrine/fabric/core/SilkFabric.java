@@ -35,6 +35,7 @@ public class SilkFabric {
         for (int i = 0; i < parameters.capacity(); i++) {
             units.add(new Silk(i, randomPosition(), unitParameters));
         }
+        units.get(0).setPassThrough(parameters.rootPassThrough());
         attached[0] = true;
         tickCount = 0;
     }

@@ -26,6 +26,7 @@ public class Silk {
     private double baseline;
     private double lastOutput;
     private long tickCount;
+    private boolean passThrough;
 
     private final List<Silk> teeth = new ArrayList<>();
     private final List<SilkTick> history = new ArrayList<>();
@@ -98,13 +99,25 @@ public class Silk {
 
     /**
      * Coordinate-conditioned nonlinear transform of the input:
-     * {@code tanh(p_x * input + p_y + p_z * input^2)}.
+     * {@code tanh(p_x * input + p_y + p_z * input^2)}. When pass-through is
+     * enabled the input is emitted unchanged; this is used only as a diagnostic.
      */
     public double transform(double input) {
+        if (passThrough) {
+            return input;
+        }
         double px = position.getX();
         double py = position.getY();
         double pz = position.getZ();
         return Math.tanh(px * input + py + pz * input * input);
+    }
+
+    public void setPassThrough(boolean enabled) {
+        passThrough = enabled;
+    }
+
+    public boolean isPassThrough() {
+        return passThrough;
     }
 
     public void moveTo(Point newPosition) {
