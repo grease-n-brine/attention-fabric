@@ -251,6 +251,30 @@ public class SilkFabric {
         return true;
     }
 
+    /**
+     * Attaches every dormant unit to a uniformly chosen attached unit with spare
+     * teeth, producing a fixed random tree over the whole pool. Used as a
+     * static-topology control.
+     */
+    public void attachAllAsRandomTree() {
+        for (int i = 1; i < units.size(); i++) {
+            if (attached[i]) {
+                continue;
+            }
+            List<Silk> candidates = new ArrayList<>();
+            for (int j = 0; j < units.size(); j++) {
+                if (attached[j] && units.get(j).getTeeth().size() < parameters.maxTeeth()) {
+                    candidates.add(units.get(j));
+                }
+            }
+            if (candidates.isEmpty()) {
+                return;
+            }
+            Silk chosen = candidates.get(random.nextInt(candidates.size()));
+            attach(chosen, units.get(i));
+        }
+    }
+
     Random random() {
         return random;
     }
