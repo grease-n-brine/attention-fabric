@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Point {
-    private final double[] coordinates;
+    private double[] coordinates;
 
     public Point(double[] coordinates) {
         if (coordinates == null || coordinates.length == 0) {
