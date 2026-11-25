@@ -20,18 +20,53 @@ import greasenbrine.fabric.structures.Point;
  * @recruiting True if unit emits a signal through teeth downstream.
  */
 
-public record SilkTick(
-    int silkID,
-    long tick,
-    Point position,
-    Point receiverInput,
-    Point excitation,
-    double targetExcitation,
-    double excitationThreshold,
-    double rawSurprise,
-    double dampedSurprise,
-    double dampeningFactor,
-    boolean triggered,
-    boolean surpriseBoosted,
-    boolean recruiting
-) {}
+public class SilkTick {
+    public int silkID;
+    public long tick;
+    public Point position;
+    public Point receiverInput;
+    public Point excitation;
+    public double targetExcitation;
+    public double excitationThreshold;
+    public double rawSurprise;
+    public double dampedSurprise;
+    public double dampeningFactor;
+    public boolean triggered;
+    public boolean surpriseBoosted;
+    public boolean recruiting;
+
+    public SilkTick(
+        int silkID,
+        long tick,
+        Point position,
+        Point receiverInput,
+        Point excitation,
+        double targetExcitation,
+        double excitationThreshold,
+        double rawSurprise,
+        double dampedSurprise,
+        double dampeningFactor,
+        boolean triggered,
+        boolean surpriseBoosted,
+        boolean recruiting
+    ) {
+        this.silkID = silkID;
+        this.tick = tick;
+        this.position = position;
+        this.receiverInput = receiverInput;
+        this.excitation = excitation;
+        this.targetExcitation = targetExcitation;
+        this.excitationThreshold = excitationThreshold;
+        this.rawSurprise = rawSurprise;
+        this.dampedSurprise = dampedSurprise;
+        this.dampeningFactor = dampeningFactor;
+        this.triggered = triggered;
+        this.surpriseBoosted = surpriseBoosted;
+        this.recruiting = recruiting;
+    }
+
+    public void setReceiverInput(Point input) {
+        this.receiverInput = input;
+    }
+}
+    
