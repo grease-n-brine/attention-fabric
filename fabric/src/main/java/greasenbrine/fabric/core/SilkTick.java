@@ -3,35 +3,35 @@ package greasenbrine.fabric.core;
 import greasenbrine.fabric.structures.Point;
 
 /**
- * Represents a single tick of the silk simulation.
- * 
- * @silkID The unique identifier of the silk.
- * @tick The current tick number of the simulation.
- * @position The 3D position of the silk at this tick.
- * @receiverInput The input received by the silk at this tick.
- * @excitation The excitation of the silk at this tick.
- * @targetExcitation The target excitation level of the silk.
- * @effectiveThreshold The activation threshold of the silk.
- * @rawSurprise The raw surprise value of the silk.
- * @dampedSurprise The damped surprise value of the silk.
- * @dampeningFactor The dampening factor applied to the surprise.
- * @triggered True if excitation deviation reached @effectiveThreshold.
- * @surpriseBoosted True if damped surprise actively pushed excitation
- * @recruiting True if unit emits a signal through teeth downstream.
+ * Immutable record of the state of one Silk after a single update.
+ *
+ * @param silkId         identifier of the Silk
+ * @param tick           update index, starting at 1 for the first processed input
+ * @param position       spatial position after the update
+ * @param input          scalar signal received through the receiver
+ * @param expectedInput  expected input prior to observing {@code input}
+ * @param rawSurprise    absolute residual between {@code input} and {@code expectedInput}
+ * @param dampedSurprise raw surprise after dampening
+ * @param excitation     excitation after gain and leakage
+ * @param baseline       adaptive baseline after the update
+ * @param output         transformed signal emitted through the teeth
+ * @param fired          whether excitation exceeded the baseline by the firing threshold
  */
-
 public record SilkTick(
-    int silkID,
+    int silkId,
     long tick,
     Point position,
-    Point receiverInput,
-    Point excitation,
-    double targetExcitation,
-    double effectiveThreshold,
+    double input,
+    double expectedInput,
     double rawSurprise,
     double dampedSurprise,
-    double dampeningFactor,
-    boolean triggered,
-    boolean surpriseBoosted,
-    boolean recruiting
-) {}
+    double excitation,
+    double baseline,
+    double output,
+    boolean fired
+) {
+    /** Excitation relative to the adaptive baseline. */
+    public double deviation() {
+        return excitation - baseline;
+    }
+}

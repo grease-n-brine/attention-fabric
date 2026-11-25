@@ -1,0 +1,11 @@
+java.version=27.0.1.0.3
+java.vendor=Homebrew
+os.name=Mac OS X
+os.arch=aarch64
+seeds=10
+unit.parameters=SilkParameters[expectationRate=0.2, leakRate=0.1, inputGain=0.0, surpriseGain=0.5, dampeningFactor=0.1, baselineRate=0.05, firingThreshold=0.5, maxExcitation=10.0]
+e2.baseline_rates=[0.01, 0.05, 0.2]
+e3.capacity=64
+e3.train_steps=20000
+e3.test_points=201
+e3.mlp_hidden=16

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Point {
-    private final double[] coordinates;
+    private double[] coordinates;
 
     public Point(double[] coordinates) {
         if (coordinates == null || coordinates.length == 0) {
@@ -84,6 +84,26 @@ public class Point {
             coordinates[1] + clamptedT * (target.get(1) - coordinates[1]),
             coordinates[2] + clamptedT * (target.get(2) - coordinates[2])
         });
+    }
+
+    public Point add(Point other) {
+        Objects.requireNonNull(other, "Other point cannot be null");
+        if (this.getDimension() != other.getDimension()) {
+            throw new IllegalArgumentException("Points must have the same dimension");
+        }
+        double[] result = new double[coordinates.length];
+        for (int i = 0; i < coordinates.length; i++) {
+            result[i] = coordinates[i] + other.coordinates[i];
+        }
+        return new Point(result);
+    }
+
+    public Point scale(double factor) {
+        double[] result = new double[coordinates.length];
+        for (int i = 0; i < coordinates.length; i++) {
+            result[i] = coordinates[i] * factor;
+        }
+        return new Point(result);
     }
 
     @Override 
