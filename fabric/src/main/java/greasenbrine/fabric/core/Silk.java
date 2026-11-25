@@ -38,7 +38,7 @@ public class Silk {
         double baselineExcitation,
         double excitationThreshold,
         double baselineGain,
-        double thresholdGain,
+        double excitationGain,
         double surpriseGain,
         double dampeningFactor
 ) {
@@ -49,7 +49,7 @@ public class Silk {
         this.baselineExcitation = baselineExcitation;
         this.excitationThreshold = excitationThreshold;
         this.baselineGain = baselineGain;
-        this.thresholdGain = thresholdGain;
+        this.thresholdGain = excitationGain;
         this.surpriseGain = surpriseGain;
         this.dampeningFactor = dampeningFactor;
    }
