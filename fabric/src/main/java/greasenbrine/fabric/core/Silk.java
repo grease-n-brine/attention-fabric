@@ -59,7 +59,23 @@ public class Silk {
     }
 
     public void step() {
-        
+        SilkTick initialTick = new SilkTick(
+            this.id,
+            0,
+            this.position,
+            new Point(new double[]{0, 0, 0}),
+            new Point(new double[]{this.baselineExcitation, this.baselineExcitation, this.baselineExcitation}),
+            this.targetExcitation,
+            this.excitationThreshold,
+            0.0,
+            0.0,
+            this.dampeningFactor,
+            false,
+            false,
+            false
+        );
+        silkActivations.add(initialTick);
+
 
     }
 
