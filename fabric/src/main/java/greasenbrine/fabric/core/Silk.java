@@ -58,7 +58,9 @@ public class Silk {
         this.dampeningFactor = dampeningFactor;
     }
 
-    public void step() {
+    public void initialize() {
+        resetHistory();
+
         SilkTick initialTick = new SilkTick(
             this.id,
             0,
@@ -75,6 +77,9 @@ public class Silk {
             true
         );
         silkActivations.add(initialTick);
+        seedInitialInput(new Point(new double[]{0, 0, 0}));
+
+        Point initialSurprise = new Point(new double[]{0, 0, 0});
     }
 
     public void resetHistory() {
@@ -92,7 +97,10 @@ public class Silk {
     }
 
     public Point calculateSurprise() {
-        return new Point(new double[]{0, 0, 0});
+        Point rawSurprise = new Point(new double[]{0, 0, 0});
+
+        
+        return rawSurprise;
     }
 
     public int getId() {
