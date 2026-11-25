@@ -11,7 +11,7 @@ import greasenbrine.fabric.structures.Point;
  * @receiverInput The input received by the silk at this tick.
  * @excitation The excitation of the silk at this tick.
  * @targetExcitation The target excitation level of the silk.
- * @excitationThreshold The activation threshold of the silk.
+ * @excitationThreshold The maximum excitation the silk can have.
  * @rawSurprise The raw surprise value of the silk.
  * @dampedSurprise The damped surprise value of the silk.
  * @dampeningFactor The dampening factor applied to the surprise.
