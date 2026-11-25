@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Silk {
+
+
     // Unique Silk identifier
     private final int id;
 
@@ -30,6 +32,8 @@ public class Silk {
 
     private List<Silk> teethConnections = new ArrayList<>();
 
+    private List<SilkTick> silkActivations = new ArrayList<>();
+
     public Silk(
         int id, 
         Point initialPosition,
@@ -41,7 +45,7 @@ public class Silk {
         double excitationGain,
         double surpriseGain,
         double dampeningFactor
-) {
+    ) {
         this.id = id;
         this.position = initialPosition;
         this.targetExcitation = targetExcitation;
@@ -52,53 +56,57 @@ public class Silk {
         this.thresholdGain = excitationGain;
         this.surpriseGain = surpriseGain;
         this.dampeningFactor = dampeningFactor;
-   }
+    }
 
-   public void step() {
+    public void step() {
 
-   }
+    }
 
-   public int getId() {
-       return id;
-   }
-   
-   public Point getPosition() {
-       return position;
-   }    
+    public void resetHistory() {
+        silkActivations.clear();
+    }
 
-   public double getTargetExcitation() {
-       return targetExcitation;
-   }
+    public int getId() {
+        return id;
+    }
+    
+    public Point getPosition() {
+        return position;
+    }    
 
-   public double getLeakRate() {
-       return leakRate;
-   }
+    public double getTargetExcitation() {
+        return targetExcitation;
+    }
 
-   public double getBaselineExcitation() {
-       return baselineExcitation;
-   }
+    public double getLeakRate() {
+        return leakRate;
+    }
 
-   public double getExcitationThreshold() {
-       return excitationThreshold;
-   }
+    public double getBaselineExcitation() {
+        return baselineExcitation;
+    }
 
-   public double getBaselineGain() {
-       return baselineGain;
-   }
+    public double getExcitationThreshold() {
+        return excitationThreshold;
+    }
 
-   public double getThresholdGain() {
-       return thresholdGain;
-   }
+    public double getBaselineGain() {
+        return baselineGain;
+    }
 
-   public double getSurpriseGain() {
-       return surpriseGain;
-   }
+    public double getThresholdGain() {
+        return thresholdGain;
+    }
 
-   public double getDampeningFactor() {
-       return dampeningFactor;
-   }
+    public double getSurpriseGain() {
+        return surpriseGain;
+    }
 
-   public List<Silk> getTeethConnections() {
-       return teethConnections;
-   }
-}
+    public double getDampeningFactor() {
+        return dampeningFactor;
+    }
+
+    public List<Silk> getTeethConnections() {
+        return teethConnections;
+    }
+    }
