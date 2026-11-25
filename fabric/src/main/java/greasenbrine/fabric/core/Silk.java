@@ -126,4 +126,4 @@ public class Silk {
     public List<Silk> getTeethConnections() {
         return teethConnections;
     }
-    }
+}
