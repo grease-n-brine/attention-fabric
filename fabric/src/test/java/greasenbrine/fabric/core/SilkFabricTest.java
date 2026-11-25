@@ -159,4 +159,50 @@ class SilkFabricTest {
         }
         assertEquals(1, f.activeCount());
     }
+
+    @Test
+    void quietLeavesArePrunedAfterBurst() {
+        FabricParameters p = new FabricParameters(4, 3, false, true, 0.01, 1.0, false, 0.0, 2.0);
+        SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 5L);
+        Silk root = f.getRoot();
+        Silk leaf = f.getUnit(1);
+        f.attach(root, leaf);
+
+        for (int i = 0; i < 5; i++) {
+            f.step(i % 2 == 0 ? 5.0 : -5.0);
+        }
+        assertTrue(f.isAttached(1));
+
+        for (int i = 0; i < 200 && f.isAttached(1); i++) {
+            f.step(0.0);
+        }
+        assertFalse(f.isAttached(1));
+        assertEquals(1, f.activeCount());
+        assertEquals(0, leaf.getTickCount(), "detached unit is reset");
+    }
+
+    @Test
+    void branchesCollapseFromLeavesInward() {
+        FabricParameters p = new FabricParameters(4, 3, false, true, 0.0, 1.0, false, 0.0, 2.0);
+        SilkFabric f = new SilkFabric(p, SilkParameters.defaults(), 5L);
+        Silk root = f.getRoot();
+        Silk mid = f.getUnit(1);
+        f.attach(root, mid);
+        f.attach(mid, f.getUnit(2));
+
+        int steps = 0;
+        while (f.isAttached(2) && steps < 500) {
+            assertTrue(f.isAttached(1), "parent must remain attached while it has a child");
+            f.step(0.0);
+            steps++;
+        }
+        assertFalse(f.isAttached(2));
+        assertTrue(f.isAttached(1), "parent is not detached in the same tick as its last child");
+
+        for (int i = 0; i < 500 && f.isAttached(1); i++) {
+            f.step(0.0);
+        }
+        assertFalse(f.isAttached(1));
+        assertEquals(1, f.activeCount());
+    }
 }
