@@ -72,7 +72,7 @@ public class Silk {
             this.dampeningFactor,
             false,
             false,
-            false
+            true
         );
         silkActivations.add(initialTick);
     }
@@ -87,6 +87,7 @@ public class Silk {
         }
         SilkTick tick = this.silkActivations.get(0);
         tick.setReceiverInput(input);
+        
         return true;
     }
 
