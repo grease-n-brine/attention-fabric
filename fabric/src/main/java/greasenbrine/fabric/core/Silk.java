@@ -57,4 +57,44 @@ public class Silk {
         this.dampeningFactor = dampeningFactor;
         this.requireSurpriseRecruitment = requireSurpriseRecruitment;
    }
+
+   public int getId() {
+       return id;
+   }
+   
+   public Point getPosition() {
+       return position;
+   }    
+
+   public double getTargetExcitation() {
+       return targetExcitation;
+   }
+
+   public double getLeakRate() {
+       return leakRate;
+   }
+
+   public double getBaselineExcitation() {
+       return baselineExcitation;
+   }
+
+   public double getExcitationThreshold() {
+       return excitationThreshold;
+   }
+
+   public double getBaselineGain() {
+       return baselineGain;
+   }
+
+   public double getThresholdGain() {
+       return thresholdGain;
+   }
+
+   public double getSurpriseGain() {
+       return surpriseGain;
+   }
+
+   public double getDampeningFactor() {
+       return dampeningFactor;
+   }
 }
