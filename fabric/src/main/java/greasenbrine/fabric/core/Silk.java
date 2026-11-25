@@ -2,238 +2,181 @@ package greasenbrine.fabric.core;
 
 import greasenbrine.fabric.structures.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * A locally adaptive unit embedded in a three-dimensional state space.
+ *
+ * <p>Each update follows the sequence: observe input, compute surprise against the
+ * expected input, update excitation with gain and leakage, adapt the baseline,
+ * decide whether to fire, update the expected input, and emit a transformed output.
+ * The emitted output is a coordinate-conditioned nonlinear function of the input;
+ * surprise is never emitted.</p>
+ */
 public class Silk {
 
     private final int id;
+    private final SilkParameters parameters;
+
     private Point position;
+    private double expectedInput;
+    private double excitation;
+    private double baseline;
+    private double lastOutput;
+    private long tickCount;
 
-    private double targetExcitation;
-    private double leakRate;
-    private double baselineExcitation;
-    private double excitationThreshold;
+    private final List<Silk> teeth = new ArrayList<>();
+    private final List<SilkTick> history = new ArrayList<>();
 
-    private double baselineGain;
-    private double thresholdGain;
-    private double surpriseGain;
-    private double dampeningFactor;
-
-    private Point expectedInput;
-    private Point excitation;
-    private long nextTick;
-
-    private final List<Silk> teethConnections = new ArrayList<>();
-    private final List<SilkTick> silkActivations = new ArrayList<>();
-
-    public Silk(
-        int id,
-        Point initialPosition,
-        double targetExcitation,
-        double leakRate,
-        double baselineExcitation,
-        double excitationThreshold,
-        double baselineGain,
-        double excitationGain,
-        double surpriseGain,
-        double dampeningFactor
-    ) {
+    public Silk(int id, Point initialPosition, SilkParameters parameters) {
         this.id = id;
-        this.position = initialPosition;
-        this.targetExcitation = targetExcitation;
-        this.leakRate = leakRate;
-        this.baselineExcitation = baselineExcitation;
-        this.excitationThreshold = excitationThreshold;
-        this.baselineGain = clamp(baselineGain, 0.0, 1.0);
-        this.thresholdGain = excitationGain;
-        this.surpriseGain = surpriseGain;
-        this.dampeningFactor = clamp(dampeningFactor, 0.0, 1.0);
-        this.expectedInput = new Point(new double[]{0.0, 0.0, 0.0});
-        this.excitation = pointFromScalar(baselineExcitation);
-        this.nextTick = 1;
+        this.position = Objects.requireNonNull(initialPosition, "initialPosition");
+        this.parameters = Objects.requireNonNull(parameters, "parameters");
+        if (initialPosition.getDimension() != 3) {
+            throw new IllegalArgumentException("Silk position must be three-dimensional");
+        }
+        reset();
     }
 
-    public void initialize() {
-        resetHistory();
-
-        expectedInput = new Point(new double[]{0.0, 0.0, 0.0});
-        excitation = pointFromScalar(baselineExcitation);
-        nextTick = 1;
-
-        silkActivations.add(new SilkTick(
-            id,
-            0,
-            position,
-            new Point(new double[]{0.0, 0.0, 0.0}),
-            expectedInput,
-            excitation,
-            targetExcitation,
-            excitationThreshold,
-            0.0,
-            0.0,
-            dampeningFactor,
-            true,
-            false,
-            false
-        ));
+    /** Restores the unit to its initial internal state and clears history. */
+    public final void reset() {
+        expectedInput = 0.0;
+        excitation = 0.0;
+        baseline = 0.0;
+        lastOutput = 0.0;
+        tickCount = 0;
+        history.clear();
     }
 
-    public SilkTick step(Point receiverInput) {
-        if (receiverInput == null) {
-            throw new IllegalArgumentException("receiverInput cannot be null");
-        }
+    /** Sets the expected input directly, representing prior exposure to a signal. */
+    public void seedExpectation(double value) {
+        expectedInput = value;
+    }
 
-        Point previousPrediction = copy(expectedInput);
-        Point rawSurprise = absoluteDifference(receiverInput, previousPrediction);
-        double rawSurpriseMagnitude = rawSurprise.magnitude();
-        double dampedSurpriseMagnitude = rawSurpriseMagnitude * (1.0 - dampeningFactor);
+    /**
+     * Processes one scalar input and returns the resulting tick.
+     */
+    public SilkTick step(double input) {
+        double rawSurprise = Math.abs(input - expectedInput);
+        double dampedSurprise = rawSurprise * (1.0 - parameters.dampeningFactor());
 
-        Point nextExcitation = new Point(new double[]{0.0, 0.0, 0.0});
-        for (int i = 0; i < 3; i++) {
-            double retained = excitation.get(i) * (1.0 - leakRate);
-            double surpriseDrive = rawSurprise.get(i) * surpriseGain * (1.0 - dampeningFactor);
-            double value = retained + surpriseDrive;
-            nextExcitation = withCoordinate(nextExcitation, i, clamp(value, 0.0, excitationThreshold));
-        }
+        double retained = excitation * (1.0 - parameters.leakRate());
+        double drive = parameters.inputGain() * Math.abs(input)
+            + parameters.surpriseGain() * dampedSurprise;
+        excitation = Math.min(parameters.maxExcitation(), retained + drive);
 
-        for (int i = 0; i < 3; i++) {
-            double predicted = previousPrediction.get(i) * (1.0 - baselineGain)
-                + receiverInput.get(i) * baselineGain;
-            expectedInput = withCoordinate(expectedInput, i, predicted);
-        }
+        baseline = baseline * (1.0 - parameters.baselineRate())
+            + excitation * parameters.baselineRate();
 
-        double excitationMagnitude = nextExcitation.magnitude();
-        baselineExcitation = baselineExcitation * (1.0 - thresholdGain)
-            + excitationMagnitude * thresholdGain;
+        boolean fired = (excitation - baseline) >= parameters.firingThreshold();
 
-        boolean triggered = excitationMagnitude >= excitationThreshold;
-        boolean surpriseBoosted = dampedSurpriseMagnitude > 0.0;
+        double previousExpectation = expectedInput;
+        expectedInput = expectedInput * (1.0 - parameters.expectationRate())
+            + input * parameters.expectationRate();
 
-        excitation = nextExcitation;
+        lastOutput = transform(input);
+        tickCount++;
+
         SilkTick tick = new SilkTick(
             id,
-            nextTick++,
+            tickCount,
             position,
-            copy(receiverInput),
-            copy(expectedInput),
-            copy(nextExcitation),
-            targetExcitation,
-            excitationThreshold,
-            rawSurpriseMagnitude,
-            dampedSurpriseMagnitude,
-            dampeningFactor,
-            triggered,
-            surpriseBoosted,
-            triggered
+            input,
+            previousExpectation,
+            rawSurprise,
+            dampedSurprise,
+            excitation,
+            baseline,
+            lastOutput,
+            fired
         );
-        silkActivations.add(tick);
+        history.add(tick);
         return tick;
     }
 
-    public void resetHistory() {
-        silkActivations.clear();
+    /**
+     * Coordinate-conditioned nonlinear transform of the input:
+     * {@code tanh(p_x * input + p_y + p_z * input^2)}.
+     */
+    public double transform(double input) {
+        double px = position.getX();
+        double py = position.getY();
+        double pz = position.getZ();
+        return Math.tanh(px * input + py + pz * input * input);
     }
 
-    public boolean seedInitialInput(Point input) {
-        if (input == null || silkActivations.isEmpty()) {
+    public void moveTo(Point newPosition) {
+        Objects.requireNonNull(newPosition, "newPosition");
+        if (newPosition.getDimension() != 3) {
+            throw new IllegalArgumentException("Silk position must be three-dimensional");
+        }
+        position = newPosition;
+    }
+
+    public boolean attachTooth(Silk target) {
+        Objects.requireNonNull(target, "target");
+        if (target == this || teeth.contains(target)) {
             return false;
         }
-
-        Point seed = copy(input);
-        expectedInput = seed;
-        silkActivations.get(0).setReceiverInput(seed);
-        silkActivations.get(0).setExpectedInput(copy(seed));
+        teeth.add(target);
         return true;
     }
 
-    public Point calculateSurprise(int tickIndex) {
-        if (tickIndex < 0 || tickIndex >= silkActivations.size()) {
-            throw new IndexOutOfBoundsException("tickIndex: " + tickIndex);
-        }
+    public boolean detachTooth(Silk target) {
+        return teeth.remove(target);
+    }
 
-        SilkTick tick = silkActivations.get(tickIndex);
-        return absoluteDifference(tick.getReceiverInput(), tick.getExpectedInput());
+    public void clearTeeth() {
+        teeth.clear();
     }
 
     public int getId() {
         return id;
     }
 
+    public SilkParameters getParameters() {
+        return parameters;
+    }
+
     public Point getPosition() {
         return position;
     }
 
-    public double getTargetExcitation() {
-        return targetExcitation;
+    public double getExpectedInput() {
+        return expectedInput;
     }
 
-    public double getLeakRate() {
-        return leakRate;
+    public double getExcitation() {
+        return excitation;
     }
 
-    public double getBaselineExcitation() {
-        return baselineExcitation;
+    public double getBaseline() {
+        return baseline;
     }
 
-    public double getExcitationThreshold() {
-        return excitationThreshold;
+    public double getDeviation() {
+        return excitation - baseline;
     }
 
-    public double getBaselineGain() {
-        return baselineGain;
+    public double getLastOutput() {
+        return lastOutput;
     }
 
-    public double getThresholdGain() {
-        return thresholdGain;
+    public long getTickCount() {
+        return tickCount;
     }
 
-    public double getSurpriseGain() {
-        return surpriseGain;
+    public List<Silk> getTeeth() {
+        return Collections.unmodifiableList(teeth);
     }
 
-    public double getDampeningFactor() {
-        return dampeningFactor;
+    public List<SilkTick> getHistory() {
+        return Collections.unmodifiableList(history);
     }
 
-    public Point getExpectedInput() {
-        return copy(expectedInput);
-    }
-
-    public Point getExcitation() {
-        return copy(excitation);
-    }
-
-    public List<SilkTick> getSilkActivations() {
-        return List.copyOf(silkActivations);
-    }
-
-    public List<Silk> getTeethConnections() {
-        return teethConnections;
-    }
-
-    private static Point absoluteDifference(Point observed, Point expected) {
-        double[] values = new double[3];
-        for (int i = 0; i < 3; i++) {
-            values[i] = Math.abs(observed.get(i) - expected.get(i));
-        }
-        return new Point(values);
-    }
-
-    private static Point copy(Point point) {
-        return new Point(point.getCoordinates());
-    }
-
-    private static Point pointFromScalar(double value) {
-        return new Point(new double[]{value, value, value});
-    }
-
-    private static Point withCoordinate(Point point, int index, double value) {
-        double[] values = point.getCoordinates();
-        values[index] = value;
-        return new Point(values);
-    }
-
-    private static double clamp(double value, double minimum, double maximum) {
-        return Math.max(minimum, Math.min(maximum, value));
+    public void clearHistory() {
+        history.clear();
     }
 }
